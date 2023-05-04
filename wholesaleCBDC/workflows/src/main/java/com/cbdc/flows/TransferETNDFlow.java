@@ -35,7 +35,7 @@ public class TransferETNDFlow extends FlowLogic<SignedTransaction> {
     public SignedTransaction call() throws FlowException {
         // Prepare what we are talking about.
         final TokenType tndTokenType = FiatCurrency.Companion.getInstance("TND");
-        final Party tndMint = getServiceHub().getNetworkMapCache().getPeerByLegalName( CentralBankConstants.TND_MINT);
+        final Party tndMint = getServiceHub().getNetworkMapCache().getPeerByLegalName( CentralBankConstants.TND_B2);
         if (tndMint == null) throw new FlowException("Not found");
 
         // Who is going to own the output, and how much?

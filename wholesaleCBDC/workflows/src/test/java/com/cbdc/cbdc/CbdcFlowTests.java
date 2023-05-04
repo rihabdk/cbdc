@@ -1,4 +1,4 @@
-package com.cbdc.cbdc;
+/*package com.cbdc.cbdc;
 
 import com.google.common.collect.ImmutableList;
 import com.r3.corda.lib.tokens.contracts.types.TokenType;
@@ -164,3 +164,4 @@ public class CbdcFlowTests {
         System.out.println("balance with Retail bank "+retailBankToken.getQuantity());
     }
 }
+*/

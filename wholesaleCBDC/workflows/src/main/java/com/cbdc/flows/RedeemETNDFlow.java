@@ -32,7 +32,7 @@ public class RedeemETNDFlow extends FlowLogic<SignedTransaction> {
     @Suspendable
     public SignedTransaction call() throws FlowException {
         final TokenType tndTokenType = FiatCurrency.Companion.getInstance("TND");
-        final Party tndMint = getServiceHub().getNetworkMapCache().getPeerByLegalName( CentralBankConstants.TND_MINT);
+        final Party tndMint = getServiceHub().getNetworkMapCache().getPeerByLegalName( CentralBankConstants.TND_B1);
         if (tndMint == null) throw new FlowException("Not found");
 
         // Describe how to find those TND held by Me.

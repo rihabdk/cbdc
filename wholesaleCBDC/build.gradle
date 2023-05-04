@@ -5,20 +5,35 @@ buildscript {
 
     ext {
         corda_release_group = constants.getProperty("cordaReleaseGroup")
+        corda_core_release_group =  constants.getProperty("cordaCoreReleaseGroup")
         corda_release_version = constants.getProperty("cordaVersion")
+        corda_core_release_version = constants.getProperty("cordaCoreVersion")
         corda_gradle_plugins_version = constants.getProperty("gradlePluginsVersion")
         junit_version = constants.getProperty("junitVersion")
         quasar_version = constants.getProperty("quasarVersion")
         log4j_version = constants.getProperty("log4jVersion")
         slf4j_version = constants.getProperty("slf4jVersion")
         corda_platform_version = constants.getProperty("platformVersion")
+
         guava_version = constants.getProperty("guavaVersion")
         confidential_id_release_version = '1.0'
         confidential_id_release_group = 'com.r3.corda.lib.ci'
-
+        //account
+        accounts_release_group = 'com.r3.corda.lib.accounts'
+        accounts_release_version = '1.0'
+         //CI
+        confidential_id_release_group = "com.r3.corda.lib.ci"
+        confidential_id_release_version = "1.0"
+        //springboot
+        spring_boot_version = '2.0.2.RELEASE'
+        spring_boot_gradle_plugin_version = '2.0.2.RELEASE'
         //Tokens
         tokens_release_group = 'com.r3.corda.lib.tokens'
         tokens_release_version = '1.2'
+
+
+
+
     }
 
     repositories {
@@ -27,6 +42,7 @@ buildscript {
         jcenter()
         maven { url 'https://software.r3.com/artifactory/corda' }
         maven { url 'http://software.r3.com/artifactory/corda-lib-dev' }
+        maven { url 'https://software.r3.com/artifactory/corda-lib' }
 
     }
 
@@ -34,10 +50,12 @@ buildscript {
         classpath "net.corda.plugins:cordapp:$corda_gradle_plugins_version"
         classpath "net.corda.plugins:cordformation:$corda_gradle_plugins_version"
         classpath "net.corda.plugins:quasar-utils:$corda_gradle_plugins_version"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_gradle_plugin_version"
     }
 }
 
 allprojects {
+//   apply from: "${rootProject.projectDir}/repositories.gradle"
     apply plugin: 'java'
 
     repositories {
@@ -64,6 +82,8 @@ allprojects {
         // This makes the JAR's SHA-256 hash repeatable.
         preserveFileTimestamps = false
         reproducibleFileOrder = true
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
     }
 }
 
@@ -90,6 +110,10 @@ dependencies {
     // CorDapp dependencies.
     cordapp project(":workflows")
     cordapp project(":contracts")
+    cordaCompile "org.apache.logging.log4j:log4j-slf4j-impl:${log4j_version}"
+    cordaCompile "org.apache.logging.log4j:log4j-web:${log4j_version}"
+    cordaCompile "org.slf4j:jul-to-slf4j:$slf4j_version"
+    cordaDriver "net.corda:corda-shell:4.10"
 
     // For logging
     cordaCompile "org.apache.logging.log4j:log4j-slf4j-impl:${log4j_version}"
@@ -100,6 +124,10 @@ dependencies {
     cordapp "$tokens_release_group:tokens-contracts:$tokens_release_version"
     cordapp "$tokens_release_group:tokens-workflows:$tokens_release_version"
     cordapp "$confidential_id_release_group:ci-workflows:$confidential_id_release_version"
+    //accounts
+    cordapp "$accounts_release_group:accounts-contracts:$accounts_release_version"
+    cordapp "$confidential_id_release_group:ci-workflows:$confidential_id_release_version"
+    cordapp "$accounts_release_group:accounts-workflows:$accounts_release_version"
 
 }
 
@@ -112,7 +140,8 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
         cordapp("$tokens_release_group:tokens-workflows:$tokens_release_version")
         cordapp "$confidential_id_release_group:ci-workflows:$confidential_id_release_version"
        // cordapp("$tokens_release_group:tokens-money:$tokens_release_version")
-
+        cordapp("$accounts_release_group:accounts-contracts:$accounts_release_version")
+        cordapp("$accounts_release_group:accounts-workflows:$accounts_release_version")
         cordapp project(':contracts')
         cordapp project(':workflows')
 	    runSchemaMigration = true
